@@ -1,5 +1,6 @@
 FROM node:10-alpine
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+# LABEL raise build error in openshift
+#LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV APP_VERSION v3.5.16
 ENV APP_DIR /opt/growi
@@ -29,7 +30,9 @@ RUN apk add --no-cache --virtual .build-deps git \
     # shrink dependencies for production
     && yarn install --production \
     && yarn cache clean \
-    && apk del .build-deps
+    && apk del .build-deps \
+    && mkdir -p /data/uploads \
+    && chmod o=u /data/uploads
 
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
